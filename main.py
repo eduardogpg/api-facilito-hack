@@ -62,9 +62,8 @@ def delete_user(id):
     
 if __name__ == '__main__':
     enviroment = config['development']
-    
-    if config_decouple('PRODUCTION', False):
-        enviroment = config['production']
+
+    enviroment = config['production']
     
     app.config.from_object(enviroment)
 
