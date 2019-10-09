@@ -6,6 +6,8 @@ from config import config
 from models import db
 from models import User
 
+from decouple import config as config_decouple
+
 app = Flask(__name__)
 
 @app.route('/api/v1/users', methods=['GET'])
@@ -60,6 +62,10 @@ def delete_user(id):
     
 if __name__ == '__main__':
     enviroment = config['development']
+    
+    if config_decouple('PRODUCTION', False):
+        enviroment = config['production']
+    
     app.config.from_object(enviroment)
 
     with app.app_context():
