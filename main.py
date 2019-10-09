@@ -10,6 +10,12 @@ from decouple import config as config_decouple
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        'message': 'Success'
+    })
+
 @app.route('/api/v1/users', methods=['GET'])
 def get_users():
     users = [ user.json() for user in User.query.all() ] 
@@ -62,8 +68,9 @@ def delete_user(id):
     
 if __name__ == '__main__':
     enviroment = config['development']
-
-    enviroment = config['production']
+    
+    if config_decouple('PRODUCTION', False):
+        enviroment = config['production']
     
     app.config.from_object(enviroment)
 
