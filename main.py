@@ -8,18 +8,22 @@ from models import User
 
 from decouple import config as config_decouple
 
-app = Flask(__name__)
+def create_app(enviroment):
+    app = Flask(__name__)
+
+    app.config.from_object(enviroment)
+
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
+    
+    return app
 
 enviroment = config['development']
 if config_decouple('PRODUCTION', default=False):
-    print('\n\n\n\nAquí vamos!!!!')
     enviroment = config['production']
 
-app.config.from_object(enviroment)
-
-with app.app_context():
-    db.init_app(app)
-    db.create_all()
+app = create_app(enviroment)
 
 @app.route('/', methods=['GET'])
 def index():
