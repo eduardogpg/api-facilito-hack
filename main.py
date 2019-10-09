@@ -10,6 +10,17 @@ from decouple import config as config_decouple
 
 app = Flask(__name__)
 
+enviroment = config['development']
+if config_decouple('PRODUCTION', default=False):
+    print('\n\n\n\nAquí vamos!!!!')
+    enviroment = config['production']
+
+app.config.from_object(enviroment)
+
+with app.app_context():
+    db.init_app(app)
+    db.create_all()
+
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({
@@ -67,15 +78,4 @@ def delete_user(id):
     return jsonify({'user': user.json() })
     
 if __name__ == '__main__':
-    enviroment = config['development']
-    
-    if config_decouple('PRODUCTION', False):
-        enviroment = config['production']
-    
-    app.config.from_object(enviroment)
-
-    with app.app_context():
-        db.init_app(app)
-        db.create_all()
-
     app.run(debug=enviroment.DEBUG)
